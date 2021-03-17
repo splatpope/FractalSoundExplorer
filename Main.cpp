@@ -1,6 +1,6 @@
 #define _USE_MATH_DEFINES
 #define _CRT_SECURE_NO_WARNINGS
-#include "WinAudio.h"
+//#include "WinAudio.h"
 #include <SFML/Graphics.hpp>
 #include <SFML/OpenGL.hpp>
 #include <iostream>
@@ -125,6 +125,7 @@ static const Fractal all_fractals[] = {
   chirikov,
 };
 
+/*
 //Synthesizer class to inherit Windows Audio.
 class Synth : public WinAudio {
 public:
@@ -264,14 +265,15 @@ public:
   double dpx;
   double dpy;
 };
+*/
 
 //Change the fractal
-void SetFractal(sf::Shader& shader, int type, Synth& synth) {
+void SetFractal(sf::Shader& shader, int type) {
   shader.setUniform("iType", type);
   jx = jy = 1e8;
   fractal = all_fractals[type];
   normalized = (type == 0);
-  synth.audio_pause = true;
+  //synth.audio_pause = true;
   hide_orbit = true;
   frame = 0;
 }
@@ -356,15 +358,15 @@ int main(int argc, char *argv[]) {
   make_window(window, renderTexture, settings, is_fullscreen);
 
   //Create audio synth
-  Synth synth(window.getSystemHandle());
+  //Synth synth(window.getSystemHandle());
 
   //Setup the shader
   shader.setUniform("iCam", sf::Vector2f((float)cam_x, (float)cam_y));
   shader.setUniform("iZoom", (float)cam_zoom);
-  SetFractal(shader, starting_fractal, synth);
+  SetFractal(shader, starting_fractal);
 
   //Start the synth
-  synth.play();
+  //synth.play();
 
   //Main Loop
   double px, py, orbit_x, orbit_y;
@@ -388,7 +390,7 @@ int main(int argc, char *argv[]) {
           window.close();
           break;
         } else if (keycode >= sf::Keyboard::Num1 && keycode <= sf::Keyboard::Num8) {
-          SetFractal(shader, keycode - sf::Keyboard::Num1, synth);
+          SetFractal(shader, keycode - sf::Keyboard::Num1);
         } else if (keycode == sf::Keyboard::F11) {
           toggle_fullscreen = true;
         } else if (keycode == sf::Keyboard::D) {
@@ -409,7 +411,7 @@ int main(int argc, char *argv[]) {
             const sf::Vector2i mousePos = sf::Mouse::getPosition(window);
             ScreenToPt(mousePos.x, mousePos.y, jx, jy);
           }
-          synth.audio_pause = true;
+          //synth.audio_pause = true;
           hide_orbit = true;
           frame = 0;
         } else if (keycode == sf::Keyboard::S) {
@@ -432,14 +434,14 @@ int main(int argc, char *argv[]) {
           leftPressed = true;
           hide_orbit = false;
           ScreenToPt(event.mouseButton.x, event.mouseButton.y, px, py);
-          synth.SetPoint(px, py);
+          //synth.SetPoint(px, py);
           orbit_x = px;
           orbit_y = py;
         } else if (event.mouseButton.button == sf::Mouse::Middle) {
           prevDrag = sf::Vector2i(event.mouseButton.x, event.mouseButton.y);
           dragging = true;
         } else if (event.mouseButton.button == sf::Mouse::Right) {
-          synth.audio_pause = true;
+          //synth.audio_pause = true;
           hide_orbit = true;
         }
       } else if (event.type == sf::Event::MouseButtonReleased) {
@@ -451,7 +453,7 @@ int main(int argc, char *argv[]) {
       } else if (event.type == sf::Event::MouseMoved) {
         if (leftPressed) {
           ScreenToPt(event.mouseMove.x, event.mouseMove.y, px, py);
-          synth.SetPoint(px, py);
+          //synth.SetPoint(px, py);
           orbit_x = px;
           orbit_y = py;
         }
@@ -574,7 +576,7 @@ int main(int argc, char *argv[]) {
         "  2 - Burning Ship\n"
         "  3 - Feather Fractal\n"
         "  4 - SFX Fractal\n"
-        "  5 - Hénon Map\n"
+        "  5 - Hï¿½non Map\n"
         "  6 - Duffing Map\n"
         "  7 - Ikeda Map\n"
         "  8 - Chirikov Map\n"
@@ -605,6 +607,6 @@ int main(int argc, char *argv[]) {
   }
 
   //Stop the synth before quitting
-  synth.stop();
+  //synth.stop();
   return 0;
 }
