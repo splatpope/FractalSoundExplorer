@@ -4,3 +4,4 @@
 *.obj
 *.pdb
 *.tlog
+.vscode
