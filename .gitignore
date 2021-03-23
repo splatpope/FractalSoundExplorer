@@ -5,3 +5,6 @@
 *.pdb
 *.tlog
 .vscode
+CMakeCache.txt
+cmake_install.cmake
+MakeFile

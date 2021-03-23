@@ -317,14 +317,14 @@ int main(int argc, char *argv[]) {
 
   //Load the vertex shader
   sf::Shader shader;
-  if (!shader.loadFromFile("vert.glsl", sf::Shader::Vertex)) {
+  if (!shader.loadFromFile("src/static/shaders/vert.glsl", sf::Shader::Vertex)) {
     std::cerr << "Failed to compile vertex shader" << std::endl;
     system("pause");
     return 1;
   }
 
   //Load the fragment shader
-  if (!shader.loadFromFile("frag.glsl", sf::Shader::Fragment)) {
+  if (!shader.loadFromFile("src/static/shaders/frag.glsl", sf::Shader::Fragment)) {
     std::cerr << "Failed to compile fragment shader" << std::endl;
     system("pause");
     return 1;
@@ -332,7 +332,7 @@ int main(int argc, char *argv[]) {
 
   //Load the font
   sf::Font font;
-  if (!font.loadFromFile("RobotoMono-Medium.ttf")) {
+  if (!font.loadFromFile("src/static/fonts/RobotoMono-Medium.ttf")) {
     std::cerr << "Failed to load font" << std::endl;
     system("pause");
     return 1;
