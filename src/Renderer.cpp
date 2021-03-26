@@ -128,7 +128,6 @@ void Renderer::Init(Settings app_settings)
 }
 
 void Renderer::ApplyZoom() {
-/* This is gentle interpolation, we will do it harshly at first */
     sf::Vector2<float> fp, delta_cam;
     ScreenToWorld(cam_dest_screen, fp); // fp == cam_dest_World ??
     cam_zoom = cam_zoom*0.8 + cam_zoom_dest * 0.2;
@@ -152,7 +151,7 @@ void Renderer::Render() {
     shader.setUniform("iResolution", window_res);
     shader.setUniform("iCam", cam_world);
     shader.setUniform("iZoom", cam_zoom);
-    shader.setUniform("iFlags", 1); // for now
+    shader.setUniform("iFlags", (0x01 | (use_color ? 0x04 : 0))); // for now
     shader.setUniform("iJulia", sf::Vector2f(julia_offset));
     shader.setUniform("iIters", max_iters);
     shader.setUniform("iTime", frame_counter);

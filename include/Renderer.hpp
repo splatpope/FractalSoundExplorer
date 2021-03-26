@@ -19,6 +19,7 @@ class Renderer
         sf::Vector2<double> julia_offset;
         float cam_zoom;
         float cam_zoom_dest;
+        bool use_color = false;
         bool is_fullscreen;
         struct state_info {
 

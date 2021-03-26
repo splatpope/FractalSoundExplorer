@@ -36,8 +36,16 @@ void FSE::PollEvents() {
                 renderer.ResizeWindow(event.size.width, event.size.height);
                 break;
             case sf::Event::KeyPressed:
-                if (event.key.code == sf::Keyboard::R) {
-                    renderer.ResetCam();
+                switch(event.key.code) {
+                    case sf::Keyboard::R:
+                        renderer.ResetCam();
+                        break;
+                    case sf::Keyboard::C:
+                        renderer.use_color = !renderer.use_color;
+                        renderer.frame_counter = 0;
+                        break;
+                    default:
+                        break;
                 }
             case sf::Event::KeyReleased:
                 if(event.key.code == sf::Keyboard::J) {
