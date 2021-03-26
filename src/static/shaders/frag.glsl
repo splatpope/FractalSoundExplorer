@@ -141,6 +141,7 @@ void main() {
 
   vec3 col = vec3(0.0, 0.0, 0.0);
   for (int i = 0; i < AA_LEVEL; ++i) {
+    //vec2 dxy = vec2(0, 0);
     vec2 dxy = vec2(rand(i*0.54321 + iTime), rand(i*0.12345 + iTime));
     VEC2 c = VEC2((screen_pos + dxy) * vec2(1.0, -1.0) / iZoom - iCam);
 
@@ -156,5 +157,5 @@ void main() {
   if (FLAG_DRAW_MSET && FLAG_DRAW_JSET) {
     col *= 0.5;
   }
-  gl_FragColor = vec4(clamp(col, 0.0, 1.0), 1.0 / (iTime + 1.0));
+  gl_FragColor = vec4(clamp(col, 0.0, 1.0), 1.0 / (iTime + 0.5));
 }
