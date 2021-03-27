@@ -16,7 +16,8 @@ class Renderer
         sf::Vector2<float> cam_world;
         sf::Vector2<int> cam_dest_screen;
         sf::Vector2<float> cam_dest_world;
-        sf::Vector2<double> julia_offset;
+        sf::Vector2<float> julia_offset;
+        bool julia_drag;
         float cam_zoom;
         float cam_zoom_dest;
         bool use_color = false;
@@ -47,6 +48,7 @@ class Renderer
         
         void ScreenToWorld(sf::Vector2<int>, sf::Vector2<float>&);
         void WorldToScreen(sf::Vector2<float>, sf::Vector2<int>&);
+        void GrabJuliaOffset();
         sf::Shader& GetShader();
         void CloseWindow();
         bool IsWindowOpen();

@@ -52,6 +52,16 @@ void FSE::PollEvents() {
                         renderer.frame_counter = 0;
                         break;
                     }
+                    case sf::Keyboard::J: {
+                        if (renderer.julia_offset.x < 1e8) {
+                            renderer.julia_offset = sf::Vector2<float>(1e8, 1e8);
+                        } else {
+                            renderer.julia_drag = true;
+                            renderer.GrabJuliaOffset();
+                        }
+                        renderer.frame_counter = 0;
+                        break;
+                    }
                     default: {
                         if (event.key.code == sf::Keyboard::Quote) event.key.code = sf::Keyboard::Num4; // Dirty hack because for some reason num4 is borked
                         if (event.key.code >= sf::Keyboard::Num1 && event.key.code <= sf::Keyboard::Num8)
@@ -60,8 +70,8 @@ void FSE::PollEvents() {
                     }
                 }
             case sf::Event::KeyReleased: {
-                if(event.key.code == sf::Keyboard::J) {
-                    state.julia_drag = false;
+                if(event.key.code == sf::Keyboard::J && !sf::Keyboard::isKeyPressed(sf::Keyboard::J)) {
+                    renderer.julia_drag = false;
                     renderer.frame_counter = 0;
                 }
                 break;
@@ -101,6 +111,10 @@ void FSE::PollEvents() {
                     sf::Vector2<int> curDrag = sf::Vector2<int>(event.mouseMove.x, event.mouseMove.y);
                     renderer.cam_dest_world += sf::Vector2<float>(curDrag - state.prevDrag) / renderer.cam_zoom;
                     state.prevDrag = curDrag;
+                    renderer.frame_counter = 0;
+                }
+                if (renderer.julia_drag == true) {
+                    renderer.ScreenToWorld(sf::Vector2<int>(event.mouseMove.x, event.mouseMove.y), renderer.julia_offset);
                     renderer.frame_counter = 0;
                 }
                 break;

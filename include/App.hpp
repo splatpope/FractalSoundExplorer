@@ -19,7 +19,6 @@ class FSE
             bool left_pressed = false;
             bool dragging = false;
             sf::Vector2<int> prevDrag;
-            bool julia_drag = false;
             bool should_take_screenshot = false;
             bool should_show_help = false;
         } state;

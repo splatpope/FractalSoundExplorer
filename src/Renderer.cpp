@@ -41,6 +41,10 @@ void Renderer::WorldToScreen(sf::Vector2<float> point, sf::Vector2<int>& screen)
     screen = sf::Vector2<int>(cam_zoom * (point + cam_world) + window_res_tr / 2.0f);
 }
 
+void Renderer::GrabJuliaOffset() {
+    ScreenToWorld(GetMousePosition(), julia_offset);
+}
+
 void set_ogl_context(sf::ContextSettings& settings) {
     settings.depthBits = 24;
     settings.stencilBits = 8;
@@ -115,7 +119,8 @@ void Renderer::Init(Settings app_settings)
     cam_dest_world = sf::Vector2<float>(0.0, 0.0);
     cam_zoom = 200.0;
     cam_zoom_dest = cam_zoom;
-    julia_offset = sf::Vector2<double>(1e8, 1e8);
+    julia_offset = sf::Vector2<float>(1e8, 1e8);
+    julia_drag = false;
 
     viewport.setPosition(0, 0);
     set_ogl_context(context_settings);
@@ -147,12 +152,16 @@ void Renderer::ResetCam() {
 
 void Renderer::Render() {
     ApplyZoom();
+    const bool hasJulia = (julia_offset.x < 1e8);
+    const bool drawMSet = (julia_drag || !hasJulia);
+    const bool drawJSet = (julia_drag || hasJulia);
+    const int flags = (drawMSet ? 0x01 : 0) | (drawJSet ? 0x02 : 0) | (use_color ? 0x04 : 0);
     //std::cout << "in render loop, max iter : " << max_iters << std::endl;
     shader.setUniform("iResolution", window_res);
     shader.setUniform("iCam", cam_world);
     shader.setUniform("iZoom", cam_zoom);
-    shader.setUniform("iFlags", (0x01 | (use_color ? 0x04 : 0))); // for now
-    shader.setUniform("iJulia", sf::Vector2f(julia_offset));
+    shader.setUniform("iFlags", flags); // for now
+    shader.setUniform("iJulia", julia_offset);
     shader.setUniform("iIters", max_iters);
     shader.setUniform("iTime", frame_counter);
 
