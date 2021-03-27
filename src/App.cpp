@@ -29,42 +29,83 @@ void FSE::PollEvents() {
     sf::Event event;
     while(renderer.PollWindowForEvents(event)) {
         switch(event.type) {
-            case sf::Event::Closed:
+            case sf::Event::Closed: {
                 renderer.CloseWindow();
                 break;
-            case sf::Event::Resized:
+            }
+            case sf::Event::Resized: {
                 renderer.ResizeWindow(event.size.width, event.size.height);
                 break;
+            }
             case sf::Event::KeyPressed:
                 switch(event.key.code) {
-                    case sf::Keyboard::R:
+                    case sf::Keyboard::Escape: {
+                        renderer.CloseWindow();
+                        break;
+                    }
+                    case sf::Keyboard::R: {
                         renderer.ResetCam();
                         break;
-                    case sf::Keyboard::C:
+                    }
+                    case sf::Keyboard::C: {
                         renderer.use_color = !renderer.use_color;
                         renderer.frame_counter = 0;
                         break;
-                    default:
+                    }
+                    default: {
+                        if (event.key.code == sf::Keyboard::Quote) event.key.code = sf::Keyboard::Num4; // Dirty hack because for some reason num4 is borked
+                        if (event.key.code >= sf::Keyboard::Num1 && event.key.code <= sf::Keyboard::Num8)
+                            SetFractal(event.key.code - sf::Keyboard::Num1);
                         break;
+                    }
                 }
-            case sf::Event::KeyReleased:
+            case sf::Event::KeyReleased: {
                 if(event.key.code == sf::Keyboard::J) {
                     state.julia_drag = false;
                     renderer.frame_counter = 0;
                 }
                 break;
-            case sf::Event::MouseWheelMoved:
+            }
+            case sf::Event::MouseWheelMoved: {
                 renderer.cam_zoom_dest *= std::pow(1.1f, event.mouseWheel.delta);
                 renderer.cam_dest_screen = renderer.GetMousePosition();
-                renderer.ApplyZoom();
+                //renderer.ApplyZoom();
                 break;
+            }
             case sf::Event::MouseButtonPressed:
-                if (event.mouseButton.button == sf::Mouse::Left) {
-                    sf::Vector2i mouse_pos = renderer.GetMousePosition();
-                    sf::Vector2f mouse_pos_world;
-                    renderer.ScreenToWorld(mouse_pos, mouse_pos_world);
-                    printf("\nClicked on (screen) : %d, %d | (world) %f, %f", mouse_pos.x, mouse_pos.y, mouse_pos_world.x, mouse_pos_world.y);
+                switch (event.mouseButton.button) {
+                    case sf::Mouse::Left: {
+                        // simply debug for now
+                        sf::Vector2i mouse_pos = renderer.GetMousePosition();
+                        sf::Vector2f mouse_pos_world;
+                        renderer.ScreenToWorld(mouse_pos, mouse_pos_world);
+                        printf("\nClicked on (screen) : %d, %d | (world) %f, %f", mouse_pos.x, mouse_pos.y, mouse_pos_world.x, mouse_pos_world.y);
+                        break;
+                    }
+                    case sf::Mouse::Middle: {
+                        state.prevDrag = sf::Vector2<int>(event.mouseButton.x, event.mouseButton.y);
+                        state.dragging = true;
+                        break;
+                    }
                 }
+                break;
+            case sf::Event::MouseButtonReleased: {
+                switch (event.mouseButton.button) {
+                    case sf::Mouse::Middle: {
+                        state.dragging = false;
+                    }
+                }
+            }
+            case sf::Event::MouseMoved: {
+                if (state.dragging) {
+                    sf::Vector2<int> curDrag = sf::Vector2<int>(event.mouseMove.x, event.mouseMove.y);
+                    renderer.cam_dest_world += sf::Vector2<float>(curDrag - state.prevDrag) / renderer.cam_zoom;
+                    state.prevDrag = curDrag;
+                    renderer.frame_counter = 0;
+                }
+                break;
+            }
+            default:
                 break;
         }
     }

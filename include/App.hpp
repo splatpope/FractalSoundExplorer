@@ -15,10 +15,10 @@ class FSE
         struct state_info {
             bool normalized = true; //used by sound synth, must be true for mandelbrot
             bool sustain = true; //should probly move to sound synth class
-            bool use_color = false;
             bool hide_orbit = false;
             bool left_pressed = false;
             bool dragging = false;
+            sf::Vector2<int> prevDrag;
             bool julia_drag = false;
             bool should_take_screenshot = false;
             bool should_show_help = false;

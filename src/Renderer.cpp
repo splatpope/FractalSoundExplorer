@@ -113,7 +113,7 @@ void Renderer::Init(Settings app_settings)
     cam_world = sf::Vector2<float>(0.0, 0.0);
     cam_dest_screen = sf::Vector2<int>(0.0, 0.0);
     cam_dest_world = sf::Vector2<float>(0.0, 0.0);
-    cam_zoom = 100.0;
+    cam_zoom = 200.0;
     cam_zoom_dest = cam_zoom;
     julia_offset = sf::Vector2<double>(1e8, 1e8);
 
