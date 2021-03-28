@@ -54,5 +54,7 @@ class Renderer
         bool IsWindowOpen();
         bool PollWindowForEvents(sf::Event&);
         sf::Vector2<int> GetMousePosition();
+
+        void TakeScreenshot();
 };
 #endif

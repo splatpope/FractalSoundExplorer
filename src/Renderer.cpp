@@ -85,6 +85,19 @@ void Renderer::MakeWindow(Settings app_settings) {
     window.requestFocus();
 }
 
+void Renderer::TakeScreenshot() {
+    window.display();
+    const time_t t = std::time(0);
+    const tm* now = std::localtime(&t);
+    char buffer[128];
+    std::strftime(buffer, sizeof(buffer), "pic_%m-%d-%y_%H-%M-%S.png", now);
+    const sf::Vector2u windowSize = window.getSize();
+    sf::Texture texture;
+    texture.create(windowSize.x, windowSize.y);
+    texture.update(window);
+    texture.copyToImage().saveToFile(buffer);
+}
+
 void Renderer::Init(Settings app_settings)
 {
     //Make sure shader is supported
