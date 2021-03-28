@@ -20,15 +20,11 @@ message("${SFML_LIBRARIES}")
 
 include_directories(${SFML_INCLUDE_DIR})
 
-add_library(Renderer "${SRC_DIR}/Renderer.cpp")
-target_include_directories(Renderer PRIVATE "${INCLUDE_DIR}")
-add_library(App "${SRC_DIR}/App.cpp" "${SRC_DIR}/Fractals.cpp")
+add_library(App "${SRC_DIR}/App.cpp" "${SRC_DIR}/Renderer.cpp" "${SRC_DIR}/Fractals.cpp")
 target_include_directories(App PRIVATE "${INCLUDE_DIR}")
-target_link_libraries(App Renderer)
-
 
 add_executable(FSE "${SRC_DIR}/Main.cpp")
-target_link_libraries(FSE Renderer App ${LIBCONFIG_PLUSPLUS_LIBRARIES} ${OPENGL_LIBRARIES} ${SFML_LIBRARIES})
+target_link_libraries(FSE App ${LIBCONFIG_PLUSPLUS_LIBRARIES} ${OPENGL_LIBRARIES} ${SFML_LIBRARIES})
 target_include_directories(FSE PRIVATE "${INCLUDE_DIR}")
 
 set(EXECUTABLE_OUTPUT_PATH ${CMAKE_BINARY_DIR})
