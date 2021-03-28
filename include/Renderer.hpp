@@ -17,7 +17,8 @@ class Renderer
         sf::Vector2<int> cam_dest_screen;
         sf::Vector2<float> cam_dest_world;
         sf::Vector2<float> julia_offset;
-        bool julia_drag;
+        bool help_enabled = false;
+        bool julia_drag = false;
         float cam_zoom;
         float cam_zoom_dest;
         bool use_color = false;
@@ -39,7 +40,8 @@ class Renderer
         sf::RectangleShape viewport;
     public:
         void Init(Settings);
-        void Render();
+        void HelpMenu_Render();
+        void Fractal_Render();
         void MakeWindow(Settings);
         void ApplyZoom();
         void ResetCam();

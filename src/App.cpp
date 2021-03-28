@@ -66,6 +66,9 @@ void FSE::PollEvents() {
                         renderer.TakeScreenshot();
                         break;
                     }
+                    case sf::Keyboard::H: {
+                        renderer.help_enabled = !renderer.help_enabled;
+                    }
                     default: {
                         if (event.key.code == sf::Keyboard::Quote) event.key.code = sf::Keyboard::Num4; // Dirty hack because for some reason num4 is borked
                         if (event.key.code >= sf::Keyboard::Num1 && event.key.code <= sf::Keyboard::Num8)
@@ -137,7 +140,7 @@ int FSE::Init(Settings app_settings){
 
     while(renderer.IsWindowOpen()) {
         PollEvents();
-        renderer.Render();
+        renderer.Fractal_Render();
     }
     return EXIT_SUCCESS;
 }

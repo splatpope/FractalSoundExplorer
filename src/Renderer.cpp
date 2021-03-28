@@ -163,7 +163,38 @@ void Renderer::ResetCam() {
     ApplyZoom();
 }
 
-void Renderer::Render() {
+void Renderer::HelpMenu_Render() {
+    sf::RectangleShape dimRect(window_res);
+    dimRect.setFillColor(sf::Color(0,0,0,128));
+    window.draw(dimRect, sf::RenderStates(BlendAlpha));
+    sf::Text helpMenu;
+    helpMenu.setFont(font);
+    helpMenu.setCharacterSize(24);
+    helpMenu.setFillColor(sf::Color::White);
+    helpMenu.setString(
+    "  H - Toggle Help Menu                Left Mouse - Click or drag to hear orbits\n"
+    "  D - Toggle Audio Dampening        Middle Mouse - Drag to pan view\n"
+    "  C - Toggle Color                   Right Mouse - Stop orbit and sound\n"
+    "F11 - Toggle Fullscreen             Scroll Wheel - Zoom in and out\n"
+    "  S - Save Snapshot\n"
+    "  R - Reset View\n"
+    "  J - Hold down, move mouse, and\n"
+    "      release to make Julia sets.\n"
+    "      Press again to switch back.\n"
+    "  1 - Mandelbrot Set\n"
+    "  2 - Burning Ship\n"
+    "  3 - Feather Fractal\n"
+    "  4 - SFX Fractal\n"
+    "  5 - Hénon Map\n"
+    "  6 - Duffing Map\n"
+    "  7 - Ikeda Map\n"
+    "  8 - Chirikov Map\n"
+    );
+    helpMenu.setPosition(20.0f, 20.0f);
+    window.draw(helpMenu);
+}
+
+void Renderer::Fractal_Render() {
     ApplyZoom();
     const bool hasJulia = (julia_offset.x < 1e8);
     const bool drawMSet = (julia_drag || !hasJulia);
@@ -189,6 +220,8 @@ void Renderer::Render() {
     sf::Sprite sprite(render_target.getTexture());
     window.clear();
     window.draw(sprite, sf::RenderStates(BlendIgnoreAlpha));
+
+    if (help_enabled) HelpMenu_Render();
 
     window.display();
     //Update shader time if frame blending is needed
