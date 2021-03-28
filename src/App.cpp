@@ -68,6 +68,12 @@ void FSE::PollEvents() {
                     }
                     case sf::Keyboard::H: {
                         renderer.help_enabled = !renderer.help_enabled;
+                        break;
+                    }
+                    case sf::Keyboard::F11: {
+                        renderer.is_fullscreen = !renderer.is_fullscreen;
+                        renderer.MakeWindow(settings);
+                        break;
                     }
                     default: {
                         if (event.key.code == sf::Keyboard::Quote) event.key.code = sf::Keyboard::Num4; // Dirty hack because for some reason num4 is borked

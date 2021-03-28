@@ -63,7 +63,7 @@ void Renderer::ResizeWindow(const int& w, const int& h) {
 }
 
 void Renderer::MakeWindow(Settings app_settings) {
-    window.close(); // is this really needed ?
+    window.close();
 
     sf::VideoMode screenSize;
     int window_w_init = app_settings.window_width;
