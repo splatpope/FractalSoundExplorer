@@ -6,7 +6,8 @@
 #include <libconfig.h++>
 #include "Settings.hpp"
 #include "App.hpp"
-/*
+
+/*  Kept as reference for future changes
 //Synthesizer class to inherit Windows Audio.
 class Synth : public WinAudio {
 public:
