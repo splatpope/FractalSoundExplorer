@@ -149,7 +149,7 @@ public:
 */
 //Main entry-
 
-void print_settings(const Settings app_settings) {
+void print_settings(const Settings& app_settings) {
 	std::cout <<
 	"FSE Settings (default.cfg):\n"
 	"target_fps : " 		<< app_settings.target_fps		<< "\n"
@@ -208,6 +208,6 @@ INT WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR lpCmdLine, INT nC
 #else
 int main(int argc, char *argv[]) {
 #endif
-	FSE App;
-	return App.Init(LoadSettings("default.cfg"));
+	App FSE;
+	return FSE.Init(LoadSettings("default.cfg"));
 }

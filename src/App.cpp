@@ -11,7 +11,7 @@ const Fractal all_fractals[] = {
   chirikov,
 };
 //Change the fractal
-void FSE::SetFractal(const int& type) {
+void App::SetFractal(const int& type) {
     // Reset renderer fields to proper values
     renderer.GetShader().setUniform("iType", type);
     renderer.julia_offset.x = 1e8;
@@ -25,7 +25,7 @@ void FSE::SetFractal(const int& type) {
 
 }
 
-void FSE::PollEvents() {
+void App::PollEvents() {
     sf::Event event;
     while(renderer.PollWindowForEvents(event)) {
         switch(event.type) {
@@ -138,7 +138,7 @@ void FSE::PollEvents() {
     }
 }
 
-int FSE::Init(Settings app_settings){
+int App::Init(Settings app_settings){
     // Initialize the renderer singleton
     renderer.Init(app_settings);
     // Setup the initial fractal

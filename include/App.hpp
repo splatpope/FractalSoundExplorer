@@ -9,7 +9,7 @@
 
 class Renderer;
 
-class FSE
+class App
 {
     public:
         struct state_info {
