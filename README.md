@@ -1,7 +1,7 @@
 # Fractal Sound Explorer
-Explore fractals in an audio-visual sandbox
+Explore fractals in an audio-visual sandbox (development repo for cross-platform, improved version)
 
-Download executable on my itch.io page:
+Download original executable on HackerPoet's itch.io page:
 https://codeparade.itch.io/fractal-sound-explorer
 
 YouTube video explanation:
@@ -13,14 +13,16 @@ Notes
 ---------------
 The fractals are designed to run in real time on a GPU.  If the program is going too slow, you can simply shrink the size of the window to make it run faster.  The rendering is also designed to increase the image quality over time.  So keep still for a bit before taking screenshots to get higher quality.
 
+Audio is currently not supported.
+
 Controls
 ---------------
 * H - Toggle Help Menu
-* Left Mouse - Click or drag to hear orbits
+* Left Mouse - Click or drag to hear orbits -- currently not supported
 * Middle Mouse - Drag to pan view
 * Right Mouse - Stop orbit and sound
 * Scroll Wheel - Zoom in and out
-* D - Toggle Audio Dampening
+* D - Toggle Audio Dampening -- currently not supported
 * C - Toggle Color
 * F11 - Toggle Fullscreen
 * S - Save Snapshot
