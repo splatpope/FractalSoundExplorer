@@ -22,9 +22,9 @@ Dependencies
 
 Building
 ---------------
-Linux : on the project root, type `cmake . -B./build` then `cd build && make`
-Windows : tbd
-Mac : tbd, should be the same as windows
+* Linux : on the project root, type `cmake . -B./build` then `cd build && make`
+* Windows : tbd
+* Mac : tbd, should be the same as windows
 
 Controls
 ---------------
