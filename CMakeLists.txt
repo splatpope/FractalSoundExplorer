@@ -29,5 +29,3 @@ target_include_directories(FSE PRIVATE "${INCLUDE_DIR}")
 set(EXECUTABLE_OUTPUT_PATH ${CMAKE_BINARY_DIR})
 file(COPY ${SRC_DIR}/static/ DESTINATION ${CMAKE_BINARY_DIR}/static/)
 file(COPY ${SRC_DIR}/default.cfg DESTINATION ${CMAKE_BINARY_DIR})
-
-#target_include_directories(FSE PUBLIC ) 
