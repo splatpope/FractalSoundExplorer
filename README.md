@@ -15,6 +15,17 @@ The fractals are designed to run in real time on a GPU.  If the program is going
 
 Audio is currently not supported.
 
+Dependencies
+---------------
+* libconfig++
+* SFML
+
+Building
+---------------
+Linux : on the project root, type `cmake . -B./build` then `cd build && make`
+Windows : tbd
+Mac : tbd, should be the same as windows
+
 Controls
 ---------------
 * H - Toggle Help Menu
