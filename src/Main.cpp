@@ -3,7 +3,6 @@
 
 #include <iostream>
 #include <unistd.h>
-#include <libconfig.h++>
 #include "Settings.hpp"
 #include "App.hpp"
 
@@ -150,65 +149,11 @@ public:
 */
 //Main entry-
 
-void print_settings(const Settings& app_settings) {
-	std::cout <<
-	"FSE Settings (default.cfg):\n"
-	"target_fps : " 		<< app_settings.target_fps		<< "\n"
-	"sample_rate : " 		<< app_settings.sample_rate		<< "\n"
-	"max_freq : "			<< app_settings.max_freq		<< "\n"
-	"fullscreen : "			<< app_settings.fullscreen		<< "\n"
-	"window_width : "		<< app_settings.window_width	<< "\n"
-	"window_height : "		<< app_settings.window_height	<< "\n"
-	"starting_fractal : "	<< app_settings.starting_fractal<< "\n"
-	"max_iters : "			<< app_settings.max_iters		<< "\n"
-	"escape_radius : "		<< app_settings.escape_radius	<< "\n"
-	<< std::endl;
-}
-
-Settings LoadSettings(const std::string& path) {
-	libconfig::Config cfg;
-	try
-	{
-		{cfg.readFile(path.c_str());}
-	}
-	catch(const libconfig::FileIOException &fioex)
-	{
-		std::cerr << "Error while reading settings file : " << fioex.what() << '\n';
-		std::getchar();
-		exit(EXIT_FAILURE);
-	}
-	catch(const libconfig::ParseException &pex)
-	{
-		std::cerr << "Config parsing error at " << pex.getFile() << ":" << pex.getLine()
-							<< " - " << pex.getError() << std::endl;
-		std::getchar();
-		exit(EXIT_FAILURE);
-	}
-	libconfig::Setting& root = cfg.getRoot();
-	libconfig::Setting& app_settings_store = root["settings"];
-	Settings app_settings;
-	if (!(	
-			app_settings_store.lookupValue("target_fps", app_settings.target_fps)
-		&& 	app_settings_store.lookupValue("sample_rate", app_settings.sample_rate)
-		&& 	app_settings_store.lookupValue("max_freq", app_settings.max_freq)
-		&& 	app_settings_store.lookupValue("window_width", app_settings.window_width)
-		&& 	app_settings_store.lookupValue("window_height", app_settings.window_height)
-		&& 	app_settings_store.lookupValue("starting_fractal", app_settings.starting_fractal)
-		&& 	app_settings_store.lookupValue("max_iters", app_settings.max_iters)
-		&& 	app_settings_store.lookupValue("escape_radius", app_settings.escape_radius)
-		&&	app_settings_store.lookupValue("fullscreen", app_settings.fullscreen)
-	)) {
-		std::cerr << "Settings are wrong !" << std::endl;
-		std::getchar();
-	}
-	print_settings(app_settings);
-	return app_settings;
-}
 #if _WIN32
 INT WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR lpCmdLine, INT nCmdShow) {
 #else
 int main(int argc, char *argv[]) {
 #endif
-	App FSE;
-	return FSE.Init(LoadSettings("default.cfg"));
+	FSE::App fse{FSE::Settings {"default.cfg"}};
+	return fse.Start();
 }
