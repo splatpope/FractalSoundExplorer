@@ -140,9 +140,11 @@ void App::PollEvents() {
 }
 
 int App::Start(){
+    synth.start();
     while(renderer.IsWindowOpen()) {
         PollEvents();
         renderer.Fractal_Render();
     }
+    synth.stop();
     return EXIT_SUCCESS;
 }
