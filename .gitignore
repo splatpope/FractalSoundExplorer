@@ -4,7 +4,9 @@
 *.obj
 *.pdb
 *.tlog
+*.a
 .vscode
 CMakeCache.txt
 cmake_install.cmake
 MakeFile
+build
