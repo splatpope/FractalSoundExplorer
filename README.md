@@ -13,7 +13,7 @@ Notes
 ---------------
 The fractals are designed to run in real time on a GPU.  If the program is going too slow, you can simply shrink the size of the window to make it run faster.  The rendering is also designed to increase the image quality over time.  So keep still for a bit before taking screenshots to get higher quality.
 
-Audio is currently not supported.
+Audio is currently somewhat supported.
 
 Dependencies
 ---------------
@@ -22,7 +22,15 @@ Dependencies
 
 Building
 ---------------
-* Linux : on the project root, type `cmake . -B./build` then `cd build && make`
+* Linux : on the project root :  
+
+```
+git submodule update Gamma
+git submodule init Gamma
+cd Gamma && make && cd ..
+cmake . -B./build
+cd build && make
+```
 * Windows : tbd
 * Mac : tbd, should be the same as windows
 
