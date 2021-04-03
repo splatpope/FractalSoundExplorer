@@ -19,6 +19,7 @@ Dependencies
 ---------------
 * libconfig++
 * SFML
+* PortAudio
 
 Building
 ---------------
