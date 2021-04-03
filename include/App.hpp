@@ -27,13 +27,14 @@ public:
 private:
     Settings settings;
     Fractal fractal;
+    FractalSynth synth;
     Renderer renderer;
 public:
     App (Settings app_settings) :
     settings {app_settings},
+    synth{48000},
     renderer {app_settings}
     {
-<<<<<<< HEAD
         SetFractal(app_settings.starting_fractal);
     }
     int Start();
@@ -41,35 +42,5 @@ public:
     void PollEvents();
 };
 
-=======
-        public:
-            struct state_info {
-                bool normalized {true}; //used by sound synth, must be true for mandelbrot
-                bool sustain {true}; //should probly move to sound synth class
-                bool hide_orbit {false};
-                bool left_pressed {false};
-                bool dragging  {false};
-                bool should_take_screenshot {false};
-                bool should_show_help {false};
-                sf::Vector2<int> prevDrag;
-            } state;
-        private:
-            Settings settings;
-            Fractal fractal;
-            FractalSynth synth;
-            Renderer renderer;
-        public:
-            App (Settings app_settings) :
-            settings {app_settings},
-            synth {48000},
-            renderer {app_settings}
-            {
-                SetFractal(app_settings.starting_fractal);
-            }
-            int Start();
-            void SetFractal(const int& type);
-            void PollEvents();
-    };
->>>>>>> IMP FractalSynth used in App
 }
 #endif
