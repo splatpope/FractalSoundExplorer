@@ -99,11 +99,13 @@ void App::PollEvents() {
             case sf::Event::MouseButtonPressed:
                 switch (event.mouseButton.button) {
                     case sf::Mouse::Left: {
-                        // simply debug for now
-                        sf::Vector2i mouse_pos {renderer.GetMousePosition()};
-                        sf::Vector2f mouse_pos_world;
+                        sf::Vector2<int> mouse_pos {renderer.GetMousePosition()};
+                        sf::Vector2<float> mouse_pos_world;
                         renderer.ScreenToWorld(mouse_pos, mouse_pos_world);
-                        printf("\nClicked on (screen) : %d, %d | (world) %f, %f", mouse_pos.x, mouse_pos.y, mouse_pos_world.x, mouse_pos_world.y);
+                        renderer.orbit_c = sf::Vector2<double>{mouse_pos_world};
+                        renderer.orbit = renderer.orbit_c;
+                        renderer.orbit_enabled = true;
+                        //printf("\nClicked on (screen) : %d, %d | (world) %f, %f", mouse_pos.x, mouse_pos.y, mouse_pos_world.x, mouse_pos_world.y);
                         synth.setFreqFromVec2(mouse_pos_world.x, mouse_pos_world.y);
                         synth.start();
                         break;
@@ -114,6 +116,7 @@ void App::PollEvents() {
                         break;
                     }
                     case sf::Mouse::Right: {
+                        renderer.orbit_enabled = false;
                         synth.stop();
                         break;
                     }
@@ -148,7 +151,7 @@ void App::PollEvents() {
 int App::Start(){
     while(renderer.IsWindowOpen()) {
         PollEvents();
-        renderer.Fractal_Render();
+        renderer.Fractal_Render(fractal);
     }
     return EXIT_SUCCESS;
 }

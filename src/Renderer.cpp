@@ -77,7 +77,8 @@ const sf::BlendMode Renderer::BlendIgnoreAlpha = sf::BlendMode(sf::BlendMode::On
 
 Renderer::Renderer(const Settings& app_settings) :
 is_fullscreen {app_settings.fullscreen},
-max_iters {app_settings.max_iters} 
+max_iters {app_settings.max_iters},
+orbit_iters {app_settings.max_freq / app_settings.target_fps}
 {
     load_shader(shader);
 
@@ -193,7 +194,31 @@ void Renderer::ResetCam() {
     ApplyZoom();
 }
 
-void Renderer::Fractal_Render() {
+void Renderer::DrawOrbit(Fractal fractal) {
+    using namespace sf;
+    glLineWidth(1.0f);
+    glColor3f(1.0f, 0.0f, 0.0f);
+    glBegin(GL_LINE_STRIP);
+    Vector2<int> s;
+    WorldToScreen(Vector2<float>{orbit}, s);
+    glVertex2i(s.x, s.y);
+    for (int i = 0; i < 200; ++i) {
+        gam::Complex<double> cx_orbit {orbit.x, orbit.y};
+        gam::Complex<double> cx_orbit_c {orbit_c.x, orbit_c.y};
+        fractal(cx_orbit, cx_orbit_c);
+        Vector2<double> next_point {cx_orbit.r, cx_orbit.i};
+        WorldToScreen(Vector2<float>{next_point}, s);
+        glVertex2i(s.x, s.y);
+        if (cx_orbit.magSqr() > 4) {
+            break;
+        } else if (i < orbit_iters) {
+            orbit = next_point;
+        }
+    }
+    glEnd();
+}
+
+void Renderer::Fractal_Render(Fractal fractal) {
     ApplyZoom();
     const bool hasJulia = (julia_offset.x < 1e8);
     const bool drawMSet = (julia_drag || !hasJulia);
@@ -220,10 +245,14 @@ void Renderer::Fractal_Render() {
     window.clear();
     window.draw(sprite, sf::RenderStates(BlendIgnoreAlpha));
 
+    if (orbit_enabled) {
+        DrawOrbit(fractal);
+    }
+
     if (help_enabled) {
         window.draw(help.background, sf::RenderStates(BlendAlpha));
         window.draw(help.help_text);
-    };
+    }
 
     window.display();
     //Update shader time if frame blending is needed

@@ -42,6 +42,7 @@ class FractalSynth : public SynthBase {
 public:
 
     gam::Sine<> osc;
+    gam::Accum<> timer;
     unsigned int max_freq;
 
     inline FractalSynth(double sampleRate, unsigned int max_freq) : 
@@ -56,8 +57,7 @@ public:
             float s = osc();
             s *= 0.2;
 
-            io.out(0) = s;
-            io.out(1) = s;
+            io.out(0) = io.out(1) = s;
         }
     }
 
