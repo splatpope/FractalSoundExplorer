@@ -1,5 +1,6 @@
 #ifndef SYNTHBASE_INCLUDED
 #define SYNTHBASE_INCLUDED
+#include <math.h>
 #include "Gamma/AudioIO.h"
 #include "Gamma/Domain.h"
 #include "Gamma/Oscillator.h"
@@ -58,6 +59,12 @@ public:
             io.out(0) = s;
             io.out(1) = s;
         }
+    }
+
+    template <typename T>
+    inline void setFreqFromVec2 (T x, T y) {
+        gam::Complex<double> cp{static_cast<double>(x), static_cast<double>(y)};
+        osc.freq(max_freq * (cp.arg() / M_PI));
     }
 };
 
