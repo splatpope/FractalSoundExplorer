@@ -32,7 +32,7 @@ private:
 public:
     App (Settings app_settings) :
     settings {app_settings},
-    synth{48000},
+    synth{app_settings.sample_rate, app_settings.max_freq},
     renderer {app_settings}
     {
         SetFractal(app_settings.starting_fractal);

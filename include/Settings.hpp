@@ -4,13 +4,13 @@
 #include <libconfig.h++>
 namespace FSE {
 struct Settings {
-    int target_fps;
-    int sample_rate;
-    int max_freq;
-    int window_width;
-    int window_height;
-    int starting_fractal;
-    int max_iters;
+    double target_fps;
+    double sample_rate;
+    unsigned int max_freq;
+    unsigned int window_width;
+    unsigned int window_height;
+    unsigned int starting_fractal;
+    unsigned int max_iters;
     int escape_radius;
     bool fullscreen;
     std::string app_name = "Fractal Sound Explorer";

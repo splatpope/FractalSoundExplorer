@@ -24,8 +24,8 @@ public:
     bool help_enabled {false};
     bool julia_drag {false};
     bool use_color {false};
-    int frame_counter {0};
-    int max_iters {1000};
+    unsigned int frame_counter {0};
+    unsigned int max_iters {1000};
     float cam_zoom {200.0F};
     float cam_zoom_dest {200.0F};
     sf::Vector2<float> window_res;

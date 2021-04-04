@@ -58,7 +58,7 @@ public:
 			mean_y = play_ny;
 			volume = 8000.0;
 			audio_reset = false;
-		}
+		} // -> this means that the first data is always the clicked point
 
 		//Check if paused
 		if (audio_pause) {
@@ -66,24 +66,36 @@ public:
 		}
 
 		//Generate the tones
-		const int steps = sample_rate / max_freq;
-		for (int i = 0; i < AUDIO_BUFF_SIZE; i+=2) {
-			const int j = m_audio_time % steps;
-			if (j == 0) {
-				play_px = play_x;
+		const int steps = sample_rate / max_freq;		// how many samples at worst does it take to represent a cycle of tones ?
+		// unit : [ sample/s / cycle/s] -> [sample/cycle] // default : 48000 / 4000 = 12
+		for (int i = 0; i < AUDIO_BUFF_SIZE; i+=2) {	// iterate over each sample couple
+
+			const int j = m_audio_time % steps;			// sample cursor inside $steps samples
+			// unit : [samples]
+			if (j == 0) {								// have we generated $steps samples ? -> next orbit point
+
+				play_px = play_x;						// clearly we use the previously generated point for tone gen
 				play_py = play_y;
-				fractal(play_x, play_y, play_cx, play_cy);
+				fractal(play_x, play_y, play_cx, play_cy); // which means we sort of pregen the next orbit point, neat
+				// in all cases -> play = current point, play_p = previous point
+
+				// reset if we clicked outside the set, obviously (first points might still be inside the escape radius)
 				if (play_x*play_x + play_y*play_y > escape_radius_sq) {
 					audio_pause = true;
 					return true;
 				}
 
-				if (normalized) {
-					dpx = play_px - play_cx;
-					dpy = play_py - play_cy;
+				if (normalized) { // at least for mandelbrot
+					
+					dpx = play_px - play_cx;			// by definition, c is constant and acts as an offset
+					dpy = play_py - play_cy;			// so we get the distance from the offset
+					// -> offset delta of previous point
 					dx = play_x - play_cx;
 					dy = play_y - play_cy;
-					if (dx != 0.0 || dy != 0.0) {
+					// -> offset delta of current point
+
+					// actual normalization of both deltas
+					if (dx != 0.0 || dy != 0.0) { // even tho the denom is never 0, its still better not to mess with 0
 						double dpmag = 1.0 / std::sqrt(1e-12 + dpx*dpx + dpy*dpy);
 						double dmag = 1.0 / std::sqrt(1e-12 + dx*dx + dy*dy);
 						dpx *= dpmag;
@@ -102,6 +114,7 @@ public:
 				//Update mean
 				mean_x = mean_x*0.99 + play_x*0.01;
 				mean_y = mean_y*0.99 + play_y*0.01;
+				// how do you justify this ?
 
 				//Don't let the volume go to infinity, clamp.
 				double m = dx*dx + dy*dy;
@@ -114,6 +127,8 @@ public:
 					dpx *= 2.0 / m;
 					dpy *= 2.0 / m;
 				}
+				// more like divide distance by 2 (4) if it's higher than sqrt 2 (2)
+				// clamp happens afterwards
 
 				//Lose volume over time unless in sustain mode
 				if (!sustain) {
@@ -121,16 +136,27 @@ public:
 				}
 			}
 
+			// so up to now, we have a distance to c or something close
+
 			//Cosine interpolation
-			double t = double(j) / double(steps);
-			t = 0.5 - 0.5*std::cos(t * 3.14159);
-			double wx = t*dx + (1.0 - t)*dpx;
+			double t = double(j) / double(steps);		// time inside the step window : [0, #steps-1] -> [0, #steps-1 / #steps]
+			// unit : [samples]
+			t = 0.5 - 0.5*std::cos(t * 3.14159);		// cosine of t, in [0, 1] (more accurately [1, 0])
+
+			// before considering the fractal :
+			// every step, we have $steps samples of a cosine of freq = #steps/2 (over the sample rate)
+			// which means we get half a cosine sample over #steps samples
+
+			// for the duration needed to represent the maximum freq
+			double wx = t*dx + (1.0 - t)*dpx; // or dpx + t*(dx - dpx)
 			double wy = t*dy + (1.0 - t)*dpy;
 
 			//Save the audio to the 2 channels
-			m_samples[i]   = (int16_t)std::min(std::max(wx * volume, -32000.0), 32000.0);
+			m_samples[i]   = (int16_t)std::min(std::max(wx * volume, -32000.0), 32000.0); // actual clamp
 			m_samples[i+1] = (int16_t)std::min(std::max(wy * volume, -32000.0), 32000.0);
 			m_audio_time += 1;
+
+			// result : the buffer holds interleaved cosine values scaled so their frequency depends on distances between orbit point distances
 		}
 
 		//Return the sound clip

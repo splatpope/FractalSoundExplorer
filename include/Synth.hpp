@@ -41,9 +41,13 @@ class FractalSynth : public SynthBase {
 public:
 
     gam::Sine<> osc;
+    unsigned int max_freq;
 
-    inline FractalSynth(double sampleRate) : SynthBase{sampleRate} { 
-        osc.freq(440);
+    inline FractalSynth(double sampleRate, unsigned int max_freq) : 
+    SynthBase {sampleRate},
+    max_freq {max_freq}
+    { 
+        osc.freq(max_freq);
     }
 
     inline void onAudio (gam::AudioIOData& io) {

@@ -142,8 +142,8 @@ void Renderer::MakeWindow(Settings app_settings) {
     window.close();
 
     sf::VideoMode screenSize;
-    int window_w_init {app_settings.window_width};
-    int window_h_init {app_settings.window_height};
+    unsigned int window_w_init {app_settings.window_width};
+    unsigned int window_h_init {app_settings.window_height};
 
     Renderer::SetWindowRes(window_h_init, window_w_init);
 
@@ -205,8 +205,8 @@ void Renderer::Fractal_Render() {
     shader.setUniform("iZoom", cam_zoom);
     shader.setUniform("iFlags", flags); // for now
     shader.setUniform("iJulia", julia_offset);
-    shader.setUniform("iIters", max_iters);
-    shader.setUniform("iTime", frame_counter);
+    shader.setUniform("iIters", static_cast<int>(max_iters));
+    shader.setUniform("iTime", static_cast<int>(frame_counter));
 
     sf::RenderStates states = sf::RenderStates::Default;
     states.blendMode = (frame_counter > 0 ? BlendAlpha : BlendIgnoreAlpha);
