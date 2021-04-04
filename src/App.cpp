@@ -104,11 +104,17 @@ void App::PollEvents() {
                         sf::Vector2f mouse_pos_world;
                         renderer.ScreenToWorld(mouse_pos, mouse_pos_world);
                         printf("\nClicked on (screen) : %d, %d | (world) %f, %f", mouse_pos.x, mouse_pos.y, mouse_pos_world.x, mouse_pos_world.y);
+                        synth.setFreqFromVec2(mouse_pos_world.x, mouse_pos_world.y);
+                        synth.start();
                         break;
                     }
                     case sf::Mouse::Middle: {
                         state.prevDrag = sf::Vector2<int>(event.mouseButton.x, event.mouseButton.y);
                         state.dragging = true;
+                        break;
+                    }
+                    case sf::Mouse::Right: {
+                        synth.stop();
                         break;
                     }
                 }
@@ -140,11 +146,9 @@ void App::PollEvents() {
 }
 
 int App::Start(){
-    synth.start();
     while(renderer.IsWindowOpen()) {
         PollEvents();
         renderer.Fractal_Render();
     }
-    synth.stop();
     return EXIT_SUCCESS;
 }
