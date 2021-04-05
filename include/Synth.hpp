@@ -4,6 +4,7 @@
 #include "Gamma/AudioIO.h"
 #include "Gamma/Domain.h"
 #include "Gamma/Oscillator.h"
+#include "Synth.hpp"
 
 namespace FSE {
 
@@ -41,20 +42,23 @@ private:
 class FractalSynth : public SynthBase {
 public:
 
-    gam::Sine<> osc;
+    gam::Sine<> osc_1;
+    gam::Sine<> osc_2;
     gam::Accum<> timer;
+    gam::Complex<double> orbit_start {0.0, 0.0};
     unsigned int max_freq;
 
     inline FractalSynth(double sampleRate, unsigned int max_freq) : 
     SynthBase {sampleRate},
     max_freq {max_freq}
     { 
-        osc.freq(max_freq);
+        osc_1.freq(max_freq);
+        osc_2.freq(max_freq);
     }
 
     inline void onAudio (gam::AudioIOData& io) {
         while (io()) {
-            float s = osc();
+            float s = osc_1() + osc_2();
             s *= 0.2;
 
             io.out(0) = io.out(1) = s;
@@ -62,9 +66,16 @@ public:
     }
 
     template <typename T>
-    inline void setFreqFromVec2 (T x, T y) {
+    inline void setFreqFromVec2 (gam::Sine<>& osc, T x, T y) {
         gam::Complex<double> cp{static_cast<double>(x), static_cast<double>(y)};
         osc.freq(max_freq * (cp.arg() / M_PI));
+    }
+
+    inline void setFreqsFromFractal(Fractal fractal) {
+        gam::Complex<double> orbit = orbit_start;
+        fractal(orbit, orbit_start);
+        setFreqFromVec2(osc_1, orbit_start.r, orbit_start.i);
+        setFreqFromVec2(osc_2, orbit.r, orbit.i);
     }
 };
 

@@ -106,7 +106,8 @@ void App::PollEvents() {
                         renderer.orbit = renderer.orbit_c;
                         renderer.orbit_enabled = true;
                         //printf("\nClicked on (screen) : %d, %d | (world) %f, %f", mouse_pos.x, mouse_pos.y, mouse_pos_world.x, mouse_pos_world.y);
-                        synth.setFreqFromVec2(mouse_pos_world.x, mouse_pos_world.y);
+                        synth.orbit_start = gam::Complex<double>{mouse_pos_world.x, mouse_pos_world.y};
+                        synth.setFreqsFromFractal(fractal);
                         synth.start();
                         break;
                     }
