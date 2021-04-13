@@ -109,6 +109,7 @@ void App::PollEvents() {
                         renderer.orbit_enabled = true;
                         //printf("\nClicked on (screen) : %d, %d | (world) %f, %f", mouse_pos.x, mouse_pos.y, mouse_pos_world.x, mouse_pos_world.y);
                         synth.orbit_start = Complex<> {mouse_pos_world.x, mouse_pos_world.y};
+                        synth.orbit = Complex<> {0.0f, 0.0f};
                         synth.start();
                         break;
                     }

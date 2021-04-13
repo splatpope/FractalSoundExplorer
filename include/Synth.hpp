@@ -48,16 +48,17 @@ public:
     gam::Sine<> osc;
     gam::Accum<> timer;
     gam::AD<> env;
-    Complex<> orbit_start {0.0, 0.0};
+    Complex<> orbit_start {0.0f, 0.0f};
+    Complex<> orbit {0.0f, 0.0f};
     Fractal fractal;
     unsigned int max_freq;
 
     inline FractalSynth(double sampleRate, unsigned int max_freq) : 
-    timer {2},
+    timer {5},
     SynthBase {sampleRate},
     max_freq {max_freq}
     {
-        env.attack(0.2);
+        env.attack(0.02);
         env.decay(0.5);
         timer.phaseMax();
         osc.freq(max_freq);
@@ -76,15 +77,16 @@ public:
 
     inline void setFreqFromCpx (Complex<> cp) {
         gam::real freq = max_freq * std::abs((std::arg(cp) / M_PI));
-        freq = std::max(std::min(static_cast<float>(max_freq), freq), 1.0f);
+        // turns out clamping the freqs is good
+        freq = std::max(std::min(static_cast<float>(max_freq), freq), 22.0f);
         osc.freq(freq);
     }
 
     inline void nextFreq(Fractal fractal) {
-        Complex<> orbit = orbit_start;
+        //Complex<> orbit = orbit_start;
         fractal(orbit, orbit_start);
-        setFreqFromCpx(orbit_start);
-        orbit_start = orbit;
+        setFreqFromCpx(orbit);
+        //orbit_start = orbit;
     }
 
     inline void start() {
