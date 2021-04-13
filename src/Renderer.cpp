@@ -37,7 +37,7 @@ void HelpMenu::Reset(const sf::Vector2<float>& window_res, const std::string& pa
 }
 
 void HelpMenu::SetSize(const sf::Vector2<float>& window_res) {
-    background.setSize(window_res);
+    background.setSize(static_cast<sf::Vector2<float>>(window_res));
 }
 
 void load_shader(sf::Shader& shader) {
@@ -88,16 +88,14 @@ orbit_iters {uint(app_settings.max_freq / app_settings.target_fps)}
 
     MakeWindow(app_settings);
     // Initial shader uniform values
-    shader.setUniform("iCam", cam_world);
-    shader.setUniform("iZoom", cam_zoom);
+    shader.setUniform("iCam", static_cast<sf::Vector2<float>>(cam_world));
+    shader.setUniform("iZoom", static_cast<float>(cam_zoom));
     // Create help menu view
     help.Reset(window_res, "static/fonts/RobotoMono-Medium.ttf");
 }
 
 void Renderer::SetWindowRes(const int& w, const int& h){
     window_res = sf::Vector2<float>(static_cast<float>(w), static_cast<float>(h));
-    window_res_tr.x = window_res.x;
-    window_res_tr.y = window_res.y;
 }
 
 sf::Shader& Renderer::GetShader() {
@@ -122,10 +120,10 @@ sf::Vector2<int> Renderer::GetMousePosition() {
 
 // Screen utilities
 void Renderer::ScreenToWorld(sf::Vector2<int> screen, sf::Vector2<float>& point) {
-    point = (sf::Vector2<float> {screen} - window_res_tr / 2.0f) / cam_zoom - cam_world;
+    point = (sf::Vector2<float> {screen} - window_res / 2.0f) / cam_zoom - cam_world;
 }
 void Renderer::WorldToScreen(sf::Vector2<float> point, sf::Vector2<int>& screen) {
-    screen = sf::Vector2<int> {cam_zoom * (point + cam_world) + window_res_tr / 2.0f};
+    screen = sf::Vector2<int> {cam_zoom * (point + cam_world) + window_res / 2.0f};
 }
 
 void Renderer::GrabJuliaOffset() {
@@ -184,11 +182,11 @@ void Renderer::ApplyZoom() {
     ScreenToWorld(cam_dest_screen, delta_cam); 
     cam_dest_world += delta_cam - fp;
     cam_world += delta_cam - fp;
-    cam_world = cam_world * float(0.8) + cam_dest_world * float(0.2);
+    cam_world = cam_world * 0.8f + cam_dest_world * 0.2f;
 }
 
 void Renderer::ResetCam() {
-    cam_world = cam_dest_world = sf::Vector2<float>(0.0, 0.0);
+    cam_world = cam_dest_world = sf::Vector2<float>{0.0, 0.0};
     cam_dest_screen = sf::Vector2<int>(window_res / 2.0f);
     cam_zoom = cam_zoom_dest = 100.0;
     frame_counter = 0;
@@ -202,14 +200,14 @@ void Renderer::DrawOrbit(Fractal fractal) {
     glColor3f(1.0f, 0.0f, 0.0f);
     glBegin(GL_LINE_STRIP);
     Vector2<int> s;
-    WorldToScreen(Vector2<float>{orbit}, s);
+    WorldToScreen(orbit, s);
     glVertex2i(s.x, s.y);
     for (int i = 0; i < 200; ++i) {
         Complex<> cx_orbit {orbit.x, orbit.y};
         Complex<> cx_orbit_c {orbit_c.x, orbit_c.y};
         fractal(cx_orbit, cx_orbit_c);
-        Vector2<double> next_point {cx_orbit.real(), cx_orbit.imag()};
-        WorldToScreen(Vector2<float>{next_point}, s);
+        Vector2<float> next_point {cx_orbit.real(), cx_orbit.imag()};
+        WorldToScreen(next_point, s);
         glVertex2i(s.x, s.y);
         if (std::norm(cx_orbit) > 4) {
             break;
@@ -258,9 +256,9 @@ void Renderer::Fractal_Render(Fractal fractal) {
 
     window.display();
     //Update shader time if frame blending is needed
-    const double xSpeed {std::abs(cam_world.x - cam_dest_world.x) * cam_zoom_dest};
-    const double ySpeed {xSpeed};
-    const double zoomSpeed {std::abs(cam_zoom / cam_zoom_dest - 1.0)};
+    const float xSpeed {std::abs(cam_world.x - cam_dest_world.x) * cam_zoom_dest};
+    const float ySpeed {xSpeed};
+    const float zoomSpeed {std::abs(cam_zoom / cam_zoom_dest - 1.0f)};
     if (xSpeed < 0.2 && ySpeed < 0.2 && zoomSpeed < 0.002) {
       frame_counter += 1;
     } else {

@@ -29,16 +29,15 @@ public:
     unsigned int frame_counter {0};
     unsigned int max_iters {1000};
     unsigned int orbit_iters {200};
-    float cam_zoom {200.0F};
-    float cam_zoom_dest {200.0F};
+    float cam_zoom {200.0f};
+    float cam_zoom_dest {200.0f};
     sf::Vector2<float> window_res;
-    sf::Vector2<float> window_res_tr;
     sf::Vector2<float> cam_world;
     sf::Vector2<int> cam_dest_screen;
     sf::Vector2<float> cam_dest_world;
-    sf::Vector2<float> julia_offset {1e8F, 1e8F};
-    sf::Vector2<double> orbit {0.0, 0.0};
-    sf::Vector2<double> orbit_c {0.0, 0.0};
+    sf::Vector2<float> julia_offset {1e8f, 1e8f};
+    sf::Vector2<float> orbit {0.0, 0.0};
+    sf::Vector2<float> orbit_c {0.0, 0.0};
     struct state_info {
 
     } state;

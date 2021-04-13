@@ -1,4 +1,5 @@
 #include "App.hpp"
+#include "Complex.hpp"
 using namespace FSE;
 
 //List of fractal equations
@@ -56,7 +57,7 @@ void App::PollEvents() {
                     }
                     case sf::Keyboard::J: {
                         if (renderer.julia_offset.x < 1e8) {
-                            renderer.julia_offset = sf::Vector2<float>(1e8, 1e8);
+                            renderer.julia_offset = sf::Vector2<float>(1e8f, 1e8f);
                         } else {
                             renderer.julia_drag = true;
                             renderer.GrabJuliaOffset();
@@ -103,11 +104,11 @@ void App::PollEvents() {
                         sf::Vector2<int> mouse_pos {renderer.GetMousePosition()};
                         sf::Vector2<float> mouse_pos_world;
                         renderer.ScreenToWorld(mouse_pos, mouse_pos_world);
-                        renderer.orbit_c = sf::Vector2<double>{mouse_pos_world};
+                        renderer.orbit_c = mouse_pos_world;
                         renderer.orbit = renderer.orbit_c;
                         renderer.orbit_enabled = true;
                         //printf("\nClicked on (screen) : %d, %d | (world) %f, %f", mouse_pos.x, mouse_pos.y, mouse_pos_world.x, mouse_pos_world.y);
-                        synth.orbit_start = gam::Complex<double>{mouse_pos_world.x, mouse_pos_world.y};
+                        synth.orbit_start = Complex<> {mouse_pos_world.x, mouse_pos_world.y};
                         synth.start();
                         break;
                     }

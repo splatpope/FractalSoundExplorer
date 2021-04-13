@@ -6,7 +6,7 @@
 
 namespace FSE {
 
-template <typename T=double>
+template <typename T=float>
 class Complex : public std::complex<T> {
 
 public:

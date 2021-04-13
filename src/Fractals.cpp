@@ -12,12 +12,12 @@ void burning_ship(FSE::Complex<>& p, FSE::Complex<> c) {
 	p += c;
 }
 void feather(FSE::Complex<>& p, FSE::Complex<> c) {
-	FSE::Complex<> p2{pow(p.real(), 2), pow(p.imag(), 2)};
+	FSE::Complex<> p2{powf(p.real(), 2.0f), powf(p.imag(), 2.0f)};
 	FSE::Complex<> one{1.0, 0.0};
 	p = p*p*p/(one + p2) + c;
 }
 void sfx(FSE::Complex<>& p, FSE::Complex<> c) {
-	FSE::Complex<> c2{pow(c.real(), 2), pow(c.imag(), 2)};
+	FSE::Complex<> c2{powf(c.real(), 2.0f), powf(c.imag(), 2.0f)};
 	p = p * std::norm(p) - (p * c2);
 }
 void henon(FSE::Complex<>& p, FSE::Complex<> c) {
@@ -28,12 +28,12 @@ void henon(FSE::Complex<>& p, FSE::Complex<> c) {
 }
 void duffing(FSE::Complex<>& p, FSE::Complex<> c) {
 	double n_r {p.imag()};
-	double n_i {-c.imag() * p.real() + c.real() * p.imag() - pow(p.imag(), 3)};
+	double n_i {-c.imag() * p.real() + c.real() * p.imag() - pow(p.imag(), 3.0f)};
 	p.real(n_r);
 	p.imag(n_i);
 }
 void ikeda(FSE::Complex<>& p, FSE::Complex<> c) { // apparently this is only one in a family of parametrized functions
-	double t {0.4 - 6.0 / (1.0 + pow(p.real(), 2) + pow(p.imag(), 2))};
+	double t {0.4 - 6.0 / (1.0 + powf(p.real(), 2.0f) + powf(p.imag(), 2.0f))};
 	double st {std::sin(t)};
 	double ct {std::cos(t)};
 	double n_r {1.0 + c.real() * (p.real() * ct - p.imag() * st)};

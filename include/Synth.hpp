@@ -2,8 +2,9 @@
 #define SYNTHBASE_INCLUDED
 #include <math.h>
 #include "Gamma/AudioIO.h"
-#include "Gamma/Domain.h"
+#include "Gamma/Envelope.h"
 #include "Gamma/Oscillator.h"
+#include "Gamma/Filter.h"
 #include "Fractals.hpp"
 #include "Synth.hpp"
 
@@ -28,9 +29,6 @@ public:
     inline gam::AudioIO& audioIO() { return audio_io; }
 
     inline void start() {
-        if (isRunning) {        
-            audio_io.stop();
-        }
         audio_io.start();
         isRunning = true;
     }
@@ -40,10 +38,8 @@ public:
         isRunning = false;
     }
 
-private:
-
-    bool isRunning {false};
-    gam::AudioIO audio_io;
+    protected : bool isRunning {false};
+    private : gam::AudioIO audio_io;
 };
 
 class FractalSynth : public SynthBase {
@@ -51,6 +47,7 @@ public:
 
     gam::Sine<> osc;
     gam::Accum<> timer;
+    gam::AD<> env;
     Complex<> orbit_start {0.0, 0.0};
     Fractal fractal;
     unsigned int max_freq;
@@ -59,31 +56,43 @@ public:
     timer {2},
     SynthBase {sampleRate},
     max_freq {max_freq}
-    { 
+    {
+        env.attack(0.2);
+        env.decay(0.5);
+        timer.phaseMax();
         osc.freq(max_freq);
     }
 
     inline void onAudio (gam::AudioIOData& io) {
         while (io()) {
-            if (timer()) setFreqsFromFractal(fractal);
-            float s = osc();
-            s *= 0.2;
+            if (timer()) {
+                nextFreq(fractal);
+                env.reset();
+            }
 
-            io.out(0) = io.out(1) = s;
+            io.out(0) = io.out(1) = osc() * env() * 0.2f;
         }
     }
 
-    template <typename T>
-    inline void setFreqFromVec2 (gam::Sine<>& osc, T x, T y) {
-        Complex<> cp{x, y};
-        osc.freq(max_freq * (std::arg(cp) / M_PI));
+    inline void setFreqFromCpx (Complex<> cp) {
+        gam::real freq = max_freq * std::abs((std::arg(cp) / M_PI));
+        freq = std::max(std::min(static_cast<float>(max_freq), freq), 1.0f);
+        osc.freq(freq);
     }
 
-    inline void setFreqsFromFractal(Fractal fractal) {
+    inline void nextFreq(Fractal fractal) {
         Complex<> orbit = orbit_start;
         fractal(orbit, orbit_start);
-        setFreqFromVec2(osc, orbit_start.real(), orbit_start.imag());
+        setFreqFromCpx(orbit_start);
         orbit_start = orbit;
+    }
+
+    inline void start() {
+        if (!isRunning) {
+            SynthBase::start();
+        } else {
+            nextFreq(fractal);
+        }
     }
 };
 
