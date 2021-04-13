@@ -28,9 +28,9 @@ public:
     bool use_color {false};
     unsigned int frame_counter {0};
     unsigned int max_iters {1000};
+    unsigned int orbit_iters {200};
     float cam_zoom {200.0F};
     float cam_zoom_dest {200.0F};
-    float orbit_iters {200.0F};
     sf::Vector2<float> window_res;
     sf::Vector2<float> window_res_tr;
     sf::Vector2<float> cam_world;

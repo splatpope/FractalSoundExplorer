@@ -1,4 +1,5 @@
 #include "Renderer.hpp"
+#include "Complex.hpp"
 using namespace FSE;
 
 void HelpMenu::Reset(const sf::Vector2<float>& window_res, const std::string& path)
@@ -78,7 +79,7 @@ const sf::BlendMode Renderer::BlendIgnoreAlpha = sf::BlendMode(sf::BlendMode::On
 Renderer::Renderer(const Settings& app_settings) :
 is_fullscreen {app_settings.fullscreen},
 max_iters {app_settings.max_iters},
-orbit_iters {app_settings.max_freq / app_settings.target_fps}
+orbit_iters {uint(app_settings.max_freq / app_settings.target_fps)}
 {
     load_shader(shader);
 
@@ -196,6 +197,7 @@ void Renderer::ResetCam() {
 
 void Renderer::DrawOrbit(Fractal fractal) {
     using namespace sf;
+
     glLineWidth(1.0f);
     glColor3f(1.0f, 0.0f, 0.0f);
     glBegin(GL_LINE_STRIP);
@@ -203,13 +205,13 @@ void Renderer::DrawOrbit(Fractal fractal) {
     WorldToScreen(Vector2<float>{orbit}, s);
     glVertex2i(s.x, s.y);
     for (int i = 0; i < 200; ++i) {
-        gam::Complex<double> cx_orbit {orbit.x, orbit.y};
-        gam::Complex<double> cx_orbit_c {orbit_c.x, orbit_c.y};
+        Complex<> cx_orbit {orbit.x, orbit.y};
+        Complex<> cx_orbit_c {orbit_c.x, orbit_c.y};
         fractal(cx_orbit, cx_orbit_c);
-        Vector2<double> next_point {cx_orbit.r, cx_orbit.i};
+        Vector2<double> next_point {cx_orbit.real(), cx_orbit.imag()};
         WorldToScreen(Vector2<float>{next_point}, s);
         glVertex2i(s.x, s.y);
-        if (cx_orbit.magSqr() > 4) {
+        if (std::norm(cx_orbit) > 4) {
             break;
         } else if (i < orbit_iters) {
             orbit = next_point;

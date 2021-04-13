@@ -51,7 +51,7 @@ public:
 
     gam::Sine<> osc;
     gam::Accum<> timer;
-    gam::Complex<double> orbit_start {0.0, 0.0};
+    Complex<> orbit_start {0.0, 0.0};
     Fractal fractal;
     unsigned int max_freq;
 
@@ -75,14 +75,14 @@ public:
 
     template <typename T>
     inline void setFreqFromVec2 (gam::Sine<>& osc, T x, T y) {
-        gam::Complex<double> cp{static_cast<double>(x), static_cast<double>(y)};
-        osc.freq(max_freq * (cp.arg() / M_PI));
+        Complex<> cp{x, y};
+        osc.freq(max_freq * (std::arg(cp) / M_PI));
     }
 
     inline void setFreqsFromFractal(Fractal fractal) {
-        gam::Complex<double> orbit = orbit_start;
+        Complex<> orbit = orbit_start;
         fractal(orbit, orbit_start);
-        setFreqFromVec2(osc, orbit_start.r, orbit_start.i);
+        setFreqFromVec2(osc, orbit_start.real(), orbit_start.imag());
         orbit_start = orbit;
     }
 };
