@@ -4,6 +4,7 @@
 #include "Gamma/AudioIO.h"
 #include "Gamma/Domain.h"
 #include "Gamma/Oscillator.h"
+#include "Fractals.hpp"
 #include "Synth.hpp"
 
 namespace FSE {
@@ -27,38 +28,45 @@ public:
     inline gam::AudioIO& audioIO() { return audio_io; }
 
     inline void start() {
+        if (isRunning) {        
+            audio_io.stop();
+        }
         audio_io.start();
+        isRunning = true;
     }
 
     inline void stop() {
         audio_io.stop();
+        isRunning = false;
     }
 
 private:
 
+    bool isRunning {false};
     gam::AudioIO audio_io;
 };
 
 class FractalSynth : public SynthBase {
 public:
 
-    gam::Sine<> osc_1;
-    gam::Sine<> osc_2;
+    gam::Sine<> osc;
     gam::Accum<> timer;
     gam::Complex<double> orbit_start {0.0, 0.0};
+    Fractal fractal;
     unsigned int max_freq;
 
     inline FractalSynth(double sampleRate, unsigned int max_freq) : 
+    timer {2},
     SynthBase {sampleRate},
     max_freq {max_freq}
     { 
-        osc_1.freq(max_freq);
-        osc_2.freq(max_freq);
+        osc.freq(max_freq);
     }
 
     inline void onAudio (gam::AudioIOData& io) {
         while (io()) {
-            float s = osc_1() + osc_2();
+            if (timer()) setFreqsFromFractal(fractal);
+            float s = osc();
             s *= 0.2;
 
             io.out(0) = io.out(1) = s;
@@ -74,8 +82,8 @@ public:
     inline void setFreqsFromFractal(Fractal fractal) {
         gam::Complex<double> orbit = orbit_start;
         fractal(orbit, orbit_start);
-        setFreqFromVec2(osc_1, orbit_start.r, orbit_start.i);
-        setFreqFromVec2(osc_2, orbit.r, orbit.i);
+        setFreqFromVec2(osc, orbit_start.r, orbit_start.i);
+        orbit_start = orbit;
     }
 };
 
